@@ -1,0 +1,88 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ShoppingCart } from "lucide-react";
+import { motion } from "framer-motion";
+
+const products = [
+  { id: 1, name: "Bolígraf de Gel Blau", price: 1.99, image: "/gel-pen-blue.jpg" },
+  { id: 2, name: "Bolígraf de Gel Negre", price: 1.99, image: "/gel-pen-black.jpg" },
+  { id: 3, name: "Estoig Escolar", price: 5.99, image: "/pencil-case.jpg" },
+  { id: 4, name: "Motxilla Escolar", price: 19.99, image: "/school-bag.jpg" }
+];
+
+export default function ZelhakStore() {
+  const [cart, setCart] = useState([]);
+
+  const addToCart = (product) => {
+    setCart([...cart, product]);
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.price, 0).toFixed(2);
+  };
+
+  const handleCheckout = () => {
+    alert("Redirigint al sistema de pagament...");
+  };
+
+  return (
+    <div className="p-6 bg-yellow-100 min-h-screen text-gray-800">
+      <motion.h1 
+        className="text-3xl font-bold mb-6 text-center text-gray-900"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        ZELHAK - Botiga de Productes Escolars
+      </motion.h1>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <motion.div 
+            key={product.id} 
+            whileHover={{ scale: 1.05 }}
+            className="bg-white p-4 rounded-2xl shadow-lg"
+          >
+            <img src={product.image} alt={product.name} className="w-full h-36 object-cover rounded-lg" />
+            <CardContent className="text-center">
+              <h2 className="text-lg font-semibold text-gray-900">{product.name}</h2>
+              <p className="text-gray-700 text-sm">{product.price}€</p>
+              <Button 
+                onClick={() => addToCart(product)} 
+                className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg transition-all"
+              >
+                Afegir al carret <ShoppingCart className="ml-2" size={16} />
+              </Button>
+            </CardContent>
+          </motion.div>
+        ))}
+      </div>
+      <motion.div 
+        className="mt-8 p-6 bg-white rounded-2xl shadow-xl max-w-md mx-auto"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+      >
+        <h2 className="text-xl font-bold text-center text-gray-900">Carret de la compra</h2>
+        {cart.length === 0 ? (
+          <p className="text-center text-gray-700">El carret està buit</p>
+        ) : (
+          <>
+            <ul className="text-gray-800">
+              {cart.map((item, index) => (
+                <li key={index} className="flex justify-between py-2 border-b">
+                  {item.name} <span className="font-semibold">{item.price}€</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-lg font-semibold text-center">Total: {getTotalPrice()}€</p>
+            <Button 
+              onClick={handleCheckout} 
+              className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition-all"
+            >
+              Pagar ara
+            </Button>
+          </>
+        )}
+      </motion.div>
+    </div>
+  );
+}
